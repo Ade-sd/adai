@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Prompt Manager</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            padding-top: 30px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #4CAF50;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+        .form-control {
+            margin-bottom: 10px;
+        }
+        .alert {
+            display: none;
+        }
+        #promptContent {
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+    </style>
+
+    <script>
+        async function createPrompt() {
+            const name = document.getElementById("name").value;
+            const content = document.getElementById("content").value;
+
+            const response = await fetch('/api/prompts', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, content})
+            });
+
+            const alertBox = document.getElementById("alertBox");
+            if (response.ok) {
+                alertBox.className = "alert alert-success";
+                alertBox.innerHTML = "Prompt created successfully!";
+                alertBox.style.display = "block";
+            } else {
+                alertBox.className = "alert alert-danger";
+                alertBox.innerHTML = "Failed to create prompt.";
+                alertBox.style.display = "block";
+            }
+        }
+
+        // Fetch and populate the list of prompt names in the dropdown
+        async function fetchPromptNames() {
+            const response = await fetch('/api/prompts');
+            if (response.ok) {
+                const prompts = await response.json();
+                const promptNamesDropdown = document.getElementById("fetchPromptNames");
+                prompts.forEach(prompt => {
+                    const option = document.createElement("option");
+                    option.value = prompt;
+                    option.innerText = prompt;
+                    promptNamesDropdown.appendChild(option);
+                });
+            } else {
+                document.getElementById("promptContent").innerText = "Failed to load prompt names.";
+            }
+        }
+
+        // Fetch the selected prompt by name
+        async function fetchPrompt() {
+            const name = document.getElementById("fetchPromptNames").value;
+            if (!name) {
+                document.getElementById("promptContent").innerText = "Please select a prompt name.";
+                return;
+            }
+
+            const response = await fetch(`/api/prompts/${name}`);
+            if (response.ok) {
+                const text = await response.text();
+                document.getElementById("promptContent").innerText = text;
+            } else {
+                document.getElementById("promptContent").innerText = "Prompt not found!";
+            }
+        }
+        // Call fetchPromptNames on page load to populate the dropdown
+        document.addEventListener("DOMContentLoaded", fetchPromptNames);
+
+        async function fetchPrompts() {
+            const response = await fetch(`/api/prompts/`);
+
+            if (response.ok) {
+                const text = await response.text();
+                document.getElementById("promptContent").innerText = text;
+            } else {
+                document.getElementById("promptContent").innerText = "Prompt not found!";
+            }
+        }
+
+        async function updatePrompt() {
+            const id = document.getElementById("updateName").value;
+            const content = document.getElementById("updateContent").value;
+
+            const response = await fetch(`/api/prompts/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: id, content})
+            });
+
+            const alertBox = document.getElementById("alertBox");
+            if (response.ok) {
+                alertBox.className = "alert alert-success";
+                alertBox.innerHTML = "Prompt updated successfully!";
+                alertBox.style.display = "block";
+            } else {
+                alertBox.className = "alert alert-danger";
+                alertBox.innerHTML = "Failed to update prompt.";
+                alertBox.style.display = "block";
+            }
+        }
+
+        async function deletePrompt() {
+            const id = document.getElementById("deleteName").value;
+            const response = await fetch(`/api/prompts/${id}`, {
+                method: 'DELETE'
+            });
+
+            const alertBox = document.getElementById("alertBox");
+            if (response.ok) {
+                alertBox.className = "alert alert-success";
+                alertBox.innerHTML = "Prompt deleted successfully!";
+                alertBox.style.display = "block";
+            } else {
+                alertBox.className = "alert alert-danger";
+                alertBox.innerHTML = "Failed to delete prompt.";
+                alertBox.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Prompt Manager</h1>
+
+    <div class="alert" id="alertBox"></div>
+
+    <!-- Tab Bar for Different Operations -->
+    <ul class="nav nav-tabs" id="operationTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="create-tab" data-toggle="tab" href="#createTab" role="tab" aria-controls="createTab" aria-selected="true">Create Prompt</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="fetch-tab" data-toggle="tab" href="#fetchTab" role="tab" aria-controls="fetchTab" aria-selected="false">Fetch Prompt</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="update-tab" data-toggle="tab" href="#updateTab" role="tab" aria-controls="updateTab" aria-selected="false">Update Prompt</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="delete-tab" data-toggle="tab" href="#deleteTab" role="tab" aria-controls="deleteTab" aria-selected="false">Delete Prompt</a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="operationTabsContent">
+        <!-- Create Prompt Section -->
+        <div class="tab-pane fade show active" id="createTab" role="tabpanel" aria-labelledby="create-tab">
+            <h2>Create Prompt</h2>
+            <div class="form-group">
+                <input type="text" id="name" class="form-control" placeholder="Enter Prompt Name" required/>
+            </div>
+            <div class="form-group">
+                <input type="text" id="content" class="form-control" placeholder="Enter Prompt Content" required/>
+            </div>
+            <button class="btn btn-primary" onclick="createPrompt()">Create Prompt</button>
+        </div>
+
+        <!-- Fetch Prompt Section -->
+        <div class="tab-pane fade" id="fetchTab" role="tabpanel" aria-labelledby="fetch-tab">
+            <h2>Fetch Prompt</h2>
+            <div class="form-group">
+                <select id="fetchPromptNames" class="form-control">
+                    <option value="">Select Prompt Name</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="fetchPrompt()">Fetch Prompt</button>
+            <div id="promptContent"></div>
+        </div>
+
+        <!-- Update Prompt Section -->
+        <div class="tab-pane fade" id="updateTab" role="tabpanel" aria-labelledby="update-tab">
+            <h2>Update Prompt</h2>
+            <div class="form-group">
+                <input type="text" id="updateName" class="form-control" placeholder="Enter Prompt Name" required/>
+            </div>
+            <div class="form-group">
+                <textarea id="updateContent" class="form-control" placeholder="Enter New Prompt Content" rows="5" required></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="updatePrompt()">Update Prompt</button>
+        </div>
+
+
+        <!-- Delete Prompt Section -->
+        <div class="tab-pane fade" id="deleteTab" role="tabpanel" aria-labelledby="delete-tab">
+            <h2>Delete Prompt</h2>
+            <div class="form-group">
+                <input type="text" id="deleteName" class="form-control" placeholder="Enter Prompt Name to Delete" required/>
+            </div>
+            <button class="btn btn-danger" onclick="deletePrompt()">Delete Prompt</button>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
