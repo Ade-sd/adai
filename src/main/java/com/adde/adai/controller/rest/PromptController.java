@@ -5,10 +5,14 @@ import com.adde.adai.model.PromptOut;
 import com.adde.adai.service.PromptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
+import static com.adde.adai.controller.statics.PromptApis.BY_NAME;
+import static com.adde.adai.controller.statics.PromptApis.PROMPT;
+
 @RestController
-@RequestMapping("/api/prompts")
+@RequestMapping(PROMPT)
 @RequiredArgsConstructor
 public class PromptController {
 
@@ -19,17 +23,17 @@ public class PromptController {
         return promptService.createPrompt(promptIn);
     }
 
-    @PutMapping("/{name}")
+    @PutMapping(BY_NAME)
     public PromptOut updatePrompt(@PathVariable String name, @RequestBody PromptIn promptIn) {
         return promptService.updatePrompt(name, promptIn);
     }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping(BY_NAME)
     public void deletePrompt(@PathVariable String name) {
         promptService.deletePrompt(name);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping(BY_NAME)
     public String getPromptWithParams(@PathVariable String name) {
         return promptService.getPromptByName(name);
     }

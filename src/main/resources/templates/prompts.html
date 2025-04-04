@@ -75,7 +75,7 @@
 
         // Fetch and populate the list of prompt names in the dropdown
         async function fetchPromptNames() {
-            const response = await fetch('/api/prompts');
+            const response = await fetch('/api/v1/prompts');
             if (response.ok) {
                 const prompts = await response.json();
                 const promptNamesDropdown = document.getElementById("fetchPromptNames");
@@ -98,7 +98,7 @@
                 return;
             }
 
-            const response = await fetch(`/api/prompts/${name}`);
+            const response = await fetch(`/api/v1/prompts/${name}`);
             if (response.ok) {
                 const text = await response.text();
                 document.getElementById("promptContent").innerText = text;
@@ -110,7 +110,7 @@
         document.addEventListener("DOMContentLoaded", fetchPromptNames);
 
         async function fetchPrompts() {
-            const response = await fetch(`/api/prompts/`);
+            const response = await fetch(`/api/v1/prompts/`);
 
             if (response.ok) {
                 const text = await response.text();
@@ -124,7 +124,7 @@
             const id = document.getElementById("updateName").value;
             const content = document.getElementById("updateContent").value;
 
-            const response = await fetch(`/api/prompts/${id}`, {
+            const response = await fetch(`/api/v1/prompts/${id}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({name: id, content})
@@ -144,7 +144,7 @@
 
         async function deletePrompt() {
             const id = document.getElementById("deleteName").value;
-            const response = await fetch(`/api/prompts/${id}`, {
+            const response = await fetch(`/api/v1/prompts/${id}`, {
                 method: 'DELETE'
             });
 
