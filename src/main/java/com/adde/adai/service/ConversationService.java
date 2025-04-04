@@ -1,7 +1,7 @@
 package com.adde.adai.service;
 
-import com.adde.adai.domain.model.ConversationDoc;
-import com.adde.adai.service.repository.ConversationRepository;
+import com.adde.adai.domain.entities.ConversationDoc;
+import com.adde.adai.repository.ConversationRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,6 @@
 
 package com.adde.adai.mapper;
 
-import com.adde.adai.domain.model.ConversationItemDoc;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -10,8 +9,8 @@ import org.mapstruct.factory.Mappers;
 public interface ChatItemMapper {
     ChatItemMapper INSTANCE = Mappers.getMapper(ChatItemMapper.class);
 
-    @Mapping(source = "content", target = "context")
-    @Mapping(source = "chatId", target = "chatId")
-    @Mapping(target = "id", ignore = true) // Ignoring id since it's auto-generated
-    ConversationItemDoc toChatItemDoc(ChatItemIn chatItemIn);
+//    @Mapping(source = "content", target = "context")
+//    @Mapping(source = "chatId", target = "chatId")
+//    @Mapping(target = "id", ignore = true) // Ignoring id since it's auto-generated
+//    ConversationItemDoc toChatItemDoc(ChatItemIn chatItemIn);
 }

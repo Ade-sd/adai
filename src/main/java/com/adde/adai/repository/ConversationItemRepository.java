@@ -1,9 +1,12 @@
-package com.adde.adai.service.repository;
+package com.adde.adai.repository;
 
-import com.adde.adai.domain.model.ConversationItemDoc;
+import com.adde.adai.domain.entities.ConversationItemDoc;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ConversationItemRepository extends MongoRepository<ConversationItemDoc, String> {
+    public List<ConversationItemDoc> findByConversationId(String conversationId);
 }

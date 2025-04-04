@@ -1,6 +1,7 @@
-package com.adde.adai.domain.model;
+package com.adde.adai.domain.entities;
 
 import lombok.*;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,7 +17,8 @@ public class ConversationItemDoc {
     @Id
     private String id;
     private String conversationId;
-    private String content;
+    private String message;
     private String messageNumber;
+    private ConversationType type;
     private Map<String, Object> metadata;
 }

@@ -1,6 +1,6 @@
-package com.adde.adai.service.repository;
+package com.adde.adai.repository;
 
-import com.adde.adai.domain.model.ConversationDoc;
+import com.adde.adai.domain.entities.ConversationDoc;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
