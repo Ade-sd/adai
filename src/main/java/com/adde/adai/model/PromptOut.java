@@ -1,4 +1,4 @@
-package com.adde.adai.domain.dto;
+package com.adde.adai.model;
 
 import lombok.*;
 
@@ -7,6 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PromptIn {
+public class PromptOut {
+    private String id;
+    private String name;
     private String content;
 }

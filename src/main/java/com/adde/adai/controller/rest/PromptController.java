@@ -1,7 +1,7 @@
 package com.adde.adai.controller.rest;
 
-import com.adde.adai.domain.dto.PromptIn;
-import com.adde.adai.domain.dto.PromptOut;
+import com.adde.adai.model.PromptIn;
+import com.adde.adai.model.PromptOut;
 import com.adde.adai.service.PromptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
 package com.adde.adai.service;
 
-import com.adde.adai.domain.dto.PromptIn;
-import com.adde.adai.domain.dto.PromptOut;
-import com.adde.adai.domain.model.PromptDoc;
-import com.adde.adai.service.repository.PromptRepository;
+import com.adde.adai.domain.entities.PromptDoc;
+import com.adde.adai.model.PromptIn;
+import com.adde.adai.model.PromptOut;
+import com.adde.adai.repository.PromptRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
