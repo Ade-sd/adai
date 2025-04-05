@@ -30,14 +30,14 @@ public abstract class AbstractChatService {
         this.promptService = promptService;
     }
 
-    public void start(ConversationIn conversationIn) {
+    public String start(ConversationIn conversationIn) {
         log.info("Starting assistant...");
         ConversationDoc conversation =
                 ConversationDoc.builder()
                         .name(conversationIn.getName())
                         .build();
         conversation = conversationService.create(conversation);
-        String systemMessage = promptService.getPromptByName("systemMessage");
+        String systemMessage = promptService.getPromptByName("SystemMessage");
 
         if (systemMessage == null) {
             throw new RuntimeException("systemMessage is null");
@@ -50,11 +50,12 @@ public abstract class AbstractChatService {
                 .build();
         conversationItemService.create(messageItem);
         log.info("Conversation started");
+        return conversation.getId();
     }
 
     public String chat(String conversationId, String message) {
         log.info("Start chat for conversationId:  {}", conversationId);
-        List<ConversationItemDoc> oldMessages = conversationItemService.findByConversationId(conversationId);
+        List<ConversationItemDoc> oldMessages = conversationItemService.findDocumentByConversationId(conversationId);
 
         ConversationItemDoc messageItem = ConversationItemDoc.builder()
                 .conversationId(conversationId)

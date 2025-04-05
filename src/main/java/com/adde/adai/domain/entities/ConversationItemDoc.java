@@ -18,7 +18,7 @@ public class ConversationItemDoc {
     private String id;
     private String conversationId;
     private String message;
-    private String messageNumber;
+    private int messageNumber;
     private ConversationType type;
     private Map<String, Object> metadata;
 }
