@@ -1,6 +1,7 @@
 package com.adde.adai.service;
 
 import com.adde.adai.domain.entities.PromptDoc;
+import com.adde.adai.mapper.PromptMapper;
 import com.adde.adai.model.PromptIn;
 import com.adde.adai.model.PromptOut;
 import com.adde.adai.repository.PromptRepository;
@@ -8,41 +9,45 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class PromptService {
 
     private final PromptRepository promptRepository;
+    private final PromptMapper promptMapper;
 
-    @CacheEvict(value = "prompts", allEntries = true)
-    public PromptOut createPrompt(PromptIn promptIn) {
-        PromptDoc entity = PromptDoc.builder()
-                .content(promptIn.getContent())
-                .build();
-        PromptDoc saved = promptRepository.save(entity);
-        return new PromptOut(saved.getId(), saved.getName(), saved.getContent());
+    public PromptService(PromptRepository promptRepository, PromptMapper promptMapper) {
+        this.promptRepository = promptRepository;
+        this.promptMapper = promptMapper;
     }
 
     @CacheEvict(value = "prompts", allEntries = true)
-    public PromptOut updatePrompt(String name, PromptIn promptIn) {
-        Optional<PromptDoc> optionalPrompt = promptRepository.findByName(name);
+    public PromptOut create(PromptIn promptIn) {
+        PromptDoc promptDoc = promptMapper.toPromptDoc(promptIn);
+        PromptDoc saved = promptRepository.save(promptDoc);
+        return promptMapper.toPromptOut(saved);
+    }
+
+    @CacheEvict(value = "prompts", allEntries = true)
+    public PromptOut update(String id, PromptIn promptIn) {
+        Optional<PromptDoc> optionalPrompt = promptRepository.findById(id);
         if (optionalPrompt.isEmpty()) {
             throw new RuntimeException("Prompt not found");
         }
-        PromptDoc existingPrompt = optionalPrompt.get();
-        existingPrompt.setContent(promptIn.getContent());
+        PromptDoc entity = optionalPrompt.get();
+        promptMapper.update(promptIn, entity);
 
-        PromptDoc updated = promptRepository.save(existingPrompt);
-        return new PromptOut(updated.getId(), updated.getName(), updated.getContent());
+        PromptDoc updated = promptRepository.save(entity);
+        return promptMapper.toPromptOut(updated);
     }
 
     @CacheEvict(value = "prompts", allEntries = true)
-    public void deletePrompt(String name) {
-        PromptDoc prompt = promptRepository.findByName(name)
+    public void delete(String id) {
+        PromptDoc prompt = promptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Prompt not found"));
         promptRepository.delete(prompt);
     }
@@ -61,14 +66,17 @@ public class PromptService {
     }
 
     @Cacheable(value = "prompts", key = "#name")
-    public String getPromptByName(String name) {
+    public String getByName(String name) {
         PromptDoc prompt = promptRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Prompt not found"));
         return prompt.getContent();
     }
 
     @Cacheable(value = "prompts")
-    public List<String> getPrompts() {
-        return promptRepository.findAll().stream().map(PromptDoc::getName).toList();
+    public List<PromptOut> getAll() {
+        return promptRepository.findAll()
+                .stream()
+                .map(promptMapper::toPromptOut)
+                .toList();
     }
 }

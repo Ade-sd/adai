@@ -3,6 +3,8 @@ package com.adde.adai.service;
 import com.adde.adai.domain.entities.ConversationDoc;
 import com.adde.adai.domain.entities.ConversationItemDoc;
 import com.adde.adai.domain.entities.ConversationType;
+import com.adde.adai.mapper.ConversationMapper;
+import com.adde.adai.model.ChatIn;
 import com.adde.adai.model.ConversationIn;
 import com.adde.adai.model.MessageProcessIn;
 import lombok.extern.slf4j.Slf4j;
@@ -23,44 +25,38 @@ public abstract class AbstractChatService {
     private final ConversationService conversationService;
     private final ConversationItemService conversationItemService;
     private final PromptService promptService;
+    private final ConversationMapper conversationMapper;
 
-    public AbstractChatService(ConversationService conversationService, ConversationItemService conversationItemService, PromptService promptService) {
+    public AbstractChatService(ConversationService conversationService, ConversationItemService conversationItemService, PromptService promptService, ConversationMapper conversationMapper) {
         this.conversationService = conversationService;
         this.conversationItemService = conversationItemService;
         this.promptService = promptService;
+        this.conversationMapper = conversationMapper;
     }
 
     public String start(ConversationIn conversationIn) {
-        log.info("Starting assistant...");
-        ConversationDoc conversation =
-                ConversationDoc.builder()
-                        .name(conversationIn.getName())
-                        .build();
+        log.info("Starting chat service...");
+        ConversationDoc conversation = conversationMapper.toConversationDoc(conversationIn);
         conversation = conversationService.create(conversation);
-        String systemMessage = promptService.getPromptByName("SystemMessage");
 
-        if (systemMessage == null) {
-            throw new RuntimeException("systemMessage is null");
-        }
-
+        String systemMessage = promptService.getByName("SystemMessage");
         ConversationItemDoc messageItem = ConversationItemDoc.builder()
                 .message(systemMessage)
                 .type(ConversationType.SYSTEM_MESSAGE)
                 .conversationId(conversation.getId())
                 .build();
         conversationItemService.create(messageItem);
-        log.info("Conversation started");
+        log.info("Chat service started.");
         return conversation.getId();
     }
 
-    public String chat(String conversationId, String message) {
-        log.info("Start chat for conversationId:  {}", conversationId);
+    public String chat(String conversationId, ChatIn chatIn) {
         List<ConversationItemDoc> oldMessages = conversationItemService.findDocumentByConversationId(conversationId);
 
         ConversationItemDoc messageItem = ConversationItemDoc.builder()
                 .conversationId(conversationId)
                 .type(ConversationType.USER_MESSAGE)
-                .message(message)
+                .message(chatIn.message())
                 .build();
         conversationItemService.create(messageItem);
 

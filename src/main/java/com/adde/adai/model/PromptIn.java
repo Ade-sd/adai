@@ -9,4 +9,5 @@ import lombok.*;
 @Builder
 public class PromptIn {
     private String content;
+    private String name;
 }

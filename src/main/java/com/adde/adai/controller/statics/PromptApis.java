@@ -5,5 +5,6 @@ public class PromptApis {
 
     public static final String PREFIX = "/api/v1";
     public static final String PROMPT = PREFIX+ "/prompts";
+    public static final String BY_ID = "/{id}";
     public static final String BY_NAME = "/{name}";
 }

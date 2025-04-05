@@ -2,6 +2,7 @@ package com.adde.adai.service;
 
 import com.adde.adai.domain.entities.ConversationItemDoc;
 import com.adde.adai.domain.entities.ConversationType;
+import com.adde.adai.mapper.ConversationMapper;
 import com.adde.adai.model.MessageProcessIn;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.messages.Message;
@@ -19,8 +20,12 @@ public class SimpleChatService extends AbstractChatService {
     private final ChatModel chatModel;
     private final ConversationItemService conversationItemService;
 
-    public SimpleChatService(ConversationService conversationService, ConversationItemService conversationItemService, PromptService promptService, ChatModel chatModel) {
-        super(conversationService, conversationItemService, promptService);
+    public SimpleChatService(ConversationService conversationService,
+                             ConversationItemService conversationItemService,
+                             PromptService promptService,
+                             ChatModel chatModel,
+                             ConversationMapper conversationMapper) {
+        super(conversationService, conversationItemService, promptService, conversationMapper);
         this.chatModel = chatModel;
         this.conversationItemService = conversationItemService;
     }

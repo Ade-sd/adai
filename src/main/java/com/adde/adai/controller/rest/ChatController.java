@@ -1,5 +1,6 @@
 package com.adde.adai.controller.rest;
 
+import com.adde.adai.model.ChatIn;
 import com.adde.adai.model.ConversationIn;
 import com.adde.adai.model.ConversationItemOut;
 import com.adde.adai.model.ConversationOut;
@@ -29,8 +30,8 @@ public class ChatController {
     }
 
     @PostMapping(START)
-    public ResponseEntity<String> startConversation(@ModelAttribute ConversationIn conversationIn,
-                                                    @RequestParam(required = false) String serviceType) {
+    public ResponseEntity<String> start(@RequestBody ConversationIn conversationIn,
+                                        @RequestParam(required = false) String serviceType) {
         AbstractChatService chatService = factory.getChatService(serviceType);
         String conversationId = chatService.start(conversationIn);
         return ResponseEntity.ok(conversationId);
@@ -38,10 +39,10 @@ public class ChatController {
 
     @PostMapping(BY_CONVERSATION_ID)
     public ResponseEntity<String> chat(@PathVariable String conversationId,
-                                       @RequestBody String message,
+                                       @RequestBody ChatIn chatIn,
                                        @RequestParam(required = false) String serviceType) {
         AbstractChatService chatService = factory.getChatService(serviceType);
-        String response = chatService.chat(conversationId, message);
+        String response = chatService.chat(conversationId, chatIn);
         return ResponseEntity.ok(response);
     }
 
