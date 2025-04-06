@@ -1,4 +1,4 @@
-package com.adde.adai.service;
+package com.adde.adai.service.chat;
 
 import com.adde.adai.domain.entities.ConversationDoc;
 import com.adde.adai.domain.entities.ConversationItemDoc;
@@ -7,6 +7,9 @@ import com.adde.adai.mapper.ConversationMapper;
 import com.adde.adai.model.ChatIn;
 import com.adde.adai.model.ConversationIn;
 import com.adde.adai.model.MessageProcessIn;
+import com.adde.adai.service.ConversationItemService;
+import com.adde.adai.service.ConversationService;
+import com.adde.adai.service.PromptService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -57,6 +60,7 @@ public abstract class AbstractChatService {
                 .conversationId(conversationId)
                 .type(ConversationType.USER_MESSAGE)
                 .message(chatIn.message())
+                .messageNumber(getCurrentMessageNumber(oldMessages))
                 .build();
         conversationItemService.create(messageItem);
 
@@ -74,6 +78,14 @@ public abstract class AbstractChatService {
                     case ASSISTANT_MESSAGE -> new AssistantMessage(oldMessage.getMessage());
                 })
                 .collect(Collectors.toList());
+    }
+
+    public int getCurrentMessageNumber(@NotNull List<ConversationItemDoc> conversationItems) {
+        int lastMessageNumber = conversationItems.stream()
+                .mapToInt(ConversationItemDoc::getMessageNumber)
+                .max()
+                .orElse(0);
+        return lastMessageNumber += 1;
     }
 
     public abstract String processMessages(MessageProcessIn messageProcessIn);

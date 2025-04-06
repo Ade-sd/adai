@@ -1,9 +1,12 @@
-package com.adde.adai.service;
+package com.adde.adai.service.chat;
 
 import com.adde.adai.domain.entities.ConversationItemDoc;
 import com.adde.adai.domain.entities.ConversationType;
 import com.adde.adai.mapper.ConversationMapper;
 import com.adde.adai.model.MessageProcessIn;
+import com.adde.adai.service.ConversationItemService;
+import com.adde.adai.service.ConversationService;
+import com.adde.adai.service.PromptService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatModel;
@@ -44,6 +47,7 @@ public class SimpleChatService extends AbstractChatService {
         ConversationItemDoc conversationItem = ConversationItemDoc.builder()
                 .type(ConversationType.ASSISTANT_MESSAGE)
                 .conversationId(messageProcessIn.getLastMessage().getConversationId())
+                .messageNumber(getCurrentMessageNumber(messageProcessIn.getOldMessages()))
                 .message(responseText).build();
         conversationItemService.create(conversationItem);
         return responseText;

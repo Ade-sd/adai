@@ -1,4 +1,4 @@
-package com.adde.adai.service;
+package com.adde.adai.service.chat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
