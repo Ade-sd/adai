@@ -85,7 +85,7 @@ public abstract class AbstractChatService {
                 .mapToInt(ConversationItemDoc::getMessageNumber)
                 .max()
                 .orElse(0);
-        return lastMessageNumber += 1;
+        return lastMessageNumber + 1;
     }
 
     public abstract String processMessages(MessageProcessIn messageProcessIn);
