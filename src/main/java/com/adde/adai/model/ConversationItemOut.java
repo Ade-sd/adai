@@ -1,6 +1,6 @@
 package com.adde.adai.model;
 
-import com.adde.adai.domain.entities.ConversationType;
+import com.adde.adai.domain.entities.enums.ConversationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,7 @@ package com.adde.adai.service.chat;
 
 import com.adde.adai.domain.entities.ConversationDoc;
 import com.adde.adai.domain.entities.ConversationItemDoc;
-import com.adde.adai.domain.entities.ConversationType;
+import com.adde.adai.domain.entities.enums.ConversationType;
 import com.adde.adai.mapper.ConversationMapper;
 import com.adde.adai.model.ChatIn;
 import com.adde.adai.model.ConversationIn;

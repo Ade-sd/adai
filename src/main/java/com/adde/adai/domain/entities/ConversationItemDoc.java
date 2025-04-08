@@ -1,7 +1,7 @@
 package com.adde.adai.domain.entities;
 
+import com.adde.adai.domain.entities.enums.ConversationType;
 import lombok.*;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

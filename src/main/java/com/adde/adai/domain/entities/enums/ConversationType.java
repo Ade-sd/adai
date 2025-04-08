@@ -1,4 +1,4 @@
-package com.adde.adai.domain.entities;
+package com.adde.adai.domain.entities.enums;
 
 public enum ConversationType {
     SYSTEM_MESSAGE,
